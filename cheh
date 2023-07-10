@@ -1,0 +1,38 @@
+#!/bin/bash
+
+return_value=0
+output_norminette=$(norminette -R CheckDefine ./ | grep -c "Error")
+random=$(($RANDOM% 20))
+
+#No error normal operation
+if	[[	$output_norminette -le $return_value ]]
+then
+	norminette -R CheckDefine ./
+else
+	#One chance equal to the modulo of random
+	if [[ $random != $return_value ]]
+	then #different of result
+		norminette -R CheckDefine ./
+	else #equal of result
+		pacmd set-default-sink 0 #set default audio output to the speakers
+		sleep 0.1
+		pacmd set-sink-mute 0 0 #force unmute audio
+		sleep 0.1
+		pacmd set-sink-volume 0 0x0450 #force volume to 20%
+		sleep 0.1
+		cvlc -f --play-and-exit /sgoinfre/goinfre/Perso/amugnier/PUBLIC/cheh.mp4 #start video with vlc (You can change path of this video)
+		clear
+		pacmd set-sink-volume 0 0x00000 #force volume to 20%
+		norminette -R CheckDefine ./ #make a normal command norminette
+		echo ""
+		echo ""
+		echo ""
+		echo ""
+		echo ""
+		echo ""
+		zenity --title "You have been trolled !" --height=100 --width=800 --warning --text="<span color=\"red\"><span size=\"80000\">Alors $USER comme ça on a des erreurs de norme ^^ ?</span></span>"
+		zenity --info --text="La prochaine fois, fait attention à bien te locker avant de partir de ton ordi ;)" --title="Troll activated !"
+		# zenity --info --text="PS : Si tu veux désactiver le troll, tu peux supprimer le fichier bleu.sh dans ton dossier de travail ;)" --title="Troll activated !"
+		zenity --info --text="Ah oui, on pense à bien se relire avant de rendre son projet ;)" --title="Troll activated !"
+		fi
+fi
